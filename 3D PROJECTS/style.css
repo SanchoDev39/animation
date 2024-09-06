@@ -1,0 +1,71 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: black;
+  perspective: 800px;
+}
+.box-container {
+  border: 2px solid whitesmoke;
+  height: 100vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.box {
+  border: 1px solid whitesmoke;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  transform-style: preserve-3d; /* Preserve 3D transformations */
+  perspective: 800px; /* Add perspective here */
+}
+
+.little-box {
+  background-color: gold;
+  width: 50px;
+  height: 50px;
+  color: red;
+  font-weight: bolder;
+  font-size: 2em;
+}
+.x {
+  animation: x 4s infinite linear;
+}
+.y {
+  animation: y 4s infinite linear;
+}
+.z {
+  animation: z 4s infinite linear; /* Z-axis animation */
+}
+
+@keyframes x {
+  0%,
+  100% {
+    transform: translateX(0px) rotateZ(0deg);
+  }
+  50% {
+    transform: translateX(200px)  rotateZ(800deg);
+  }
+}
+@keyframes y {
+  0%,
+  100% {
+    transform: translateY(-70px);
+  }
+  50% {
+transform: translateY(200px) rotateZ(800deg);  }
+}
+@keyframes z {
+  0%,
+  100% {
+    transform: translateZ(0px); /* Start at original position */
+  }
+  50% {
+    transform: translateX(20px) translateY(35px)translateZ(700px); /* Move closer */
+  }
+}
