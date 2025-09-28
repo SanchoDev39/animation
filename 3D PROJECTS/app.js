@@ -1,6 +1,21 @@
 const track = document.getElementById("image-track");
 
-const handleOnDown = (e) => (track.dataset.mouseDownAt = e.clientX);
+// Initialize dataset properties
+track.dataset.mouseDownAt = "0";
+track.dataset.prevPercentage = "0";
+track.dataset.percentage = "0";
+
+const getClientX = (e) => {
+  if (e.touches || e.changedTouches) {
+    const touch = e.touches[0] || e.changedTouches[0];
+    return touch ? touch.clientX : 0;
+  }
+  return e.clientX;
+};
+
+const handleOnDown = (e) => {
+  track.dataset.mouseDownAt = getClientX(e).toString();
+};
 
 const handleOnUp = () => {
   track.dataset.mouseDownAt = "0";
@@ -10,7 +25,7 @@ const handleOnUp = () => {
 const handleOnMove = (e) => {
   if (track.dataset.mouseDownAt === "0") return;
 
-  const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
+  const mouseDelta = parseFloat(track.dataset.mouseDownAt) - getClientX(e),
     maxDelta = window.innerWidth / 2;
 
   const percentage = (mouseDelta / maxDelta) * -100,
@@ -37,7 +52,38 @@ const handleOnMove = (e) => {
   }
 };
 
-/* -- Had to add extra lines for touch events -- */
+// Use addEventListener instead of window.on* for better compatibility
+window.addEventListener("mousedown", handleOnDown);
+window.addEventListener("touchstart", (e) => handleOnDown(e), {
+  passive: false,
+});
+
+window.addEventListener("mouseup", handleOnUp);
+window.addEventListener("touchend", (e) => handleOnUp(e), { passive: false });
+
+window.addEventListener("mousemove", handleOnMove);
+window.addEventListener("touchmove", (e) => handleOnMove(e), {
+  passive: false,
+});
+
+// Fixed image enlargement (toggle on click)
+function setupImageClicks() {
+  const images = document.getElementsByClassName("image");
+  for (const image of images) {
+    image.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.style.transform === "scale(2)") {
+        target.style.transform = "scale(1)"; // Reset
+      } else {
+        target.style.transform = "scale(2)"; // Enlarge
+      }
+    });
+  }
+}
+
+setupImageClicks(); // Call the function to set up listeners
+
+/* -- Had to add extra lines for touch events -- 
 
 window.onmousedown = (e) => handleOnDown(e);
 
@@ -53,7 +99,11 @@ window.ontouchmove = (e) => handleOnMove(e.touches[0]);
 
 function imageSize() {
   const imageSize = document.getElementsByTagName("img");
-  imageSize.addEventListener("click", function () {
-    imageSize.style.transform = "scale(4)";
-  });
+  for (image in imageSize) {
+    image.addEventListener("click", function () {
+      image.style.transform = "scale(4)";
+    });
+  }
+  return image;
 }
+imageSize(); */
